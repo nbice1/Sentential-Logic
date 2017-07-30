@@ -35,7 +35,7 @@ The following inference rules can be used, leading to a sound and complete natur
 
 4. 'Assume: X': This creates a subproof beginning with the formula 'X' as assumption. Further inference rules will be applied within the subproof until an inference rule is used which exits the subproof. For example, if the initial proof has no premises [], inputting 'Assume: (\~p v \~q)' will begin a subproof with '(\~p v \~q)' as assumption, where the proof will be stored and printed as [[(\~p v \~q)]]. Note that the formula is embedded within a single-element list to indicate that it is an assumption rather than a derived formula. 
 
-5. 'TI': This applies tautology introduction, adding the tautology 'T' to the next step of your proof. For example, if the proof is [[p], [q]], inputting 'TI' will modify and print the proof as [[p], [q], T]. 
+5. 'TI': This applies tautology introduction, adding the tautology 'T' as the next step of your proof. For example, if the proof is [[p], [q]], inputting 'TI' will modify and print the proof as [[p], [q], T]. 
 
 6. 'FE, n': This applies contradiction elimination to the contradiction located at position n in the proof-list. The user will be asked to input a formula in response. This formula will then be added to the proof as the formula derived from the contradiction. For example, if the proof is [[p], [\~p], F], inputting 'FE, 2' will result in a query for a formula, and inputting 'q' in response will modify and print the proof as [[p], [\~p], F, q]. 
 
@@ -49,4 +49,12 @@ The following inference rules can be used, leading to a sound and complete natur
 
 11. 'vI2, n': This applies disjunction introduction to the formula located at position n in the proof-list resulting in that formula as right disjunct. The user will then be asked to input a formula corresponding to the left disjunct, and the complete disjunction will then be added as the next step of the proof. For example, if the proof is [[p]], inputting 'vI1, 0' will result in a query for a formula, and inputting 'q' will modify and print the proof as [[p], (q v p)]. 
 
-12. 
+12. '\~E, n': This applies double negation elimination to the formula located at position n in the proof-list. For example, if the proof is [[\~\~p]], inputting '~E, 0' will modify and print the proof as [[\~\~p], p]. 
+
+13. '\~I, n, m': This applies negation introduction to the subproof beginning with an assumption at position n in the proof-list and ending with a contradiction ('F') at position m. The entire subproof will then be contained within a list to show that it has been closed, while the negation of its assumption will be added to the proof as the next step. For example, if the proof is [[\~\~p], p, [\~p], F], inputting '\~I, 2, 3' will modify and print the proof as [[\~\~p], p, [[\~p], F], \~\~p]. Note that the entire subproof is now a single element in the list, and hence the entire list now has four elements. 
+
+14. '>E, n, m': This applies conditional elimination (modus ponens) to the formula at position n in the proof-list and the conditional at position m, where the former formula must be the antecendent of the conditional. For example, if the proof is [[p], [p > q]], inputting '>E, 0, 1' will modify and print the proof as [[p], [p > q], q]. 
+
+15. '>I, n, m': This applies conditional introduction to the subproof beginning with an assumption at position n in the proof-list and ending at position m. The entire subproof will then be contained within a list to show that it has been closed, while a conditional with its assumption as antecendent and its last element as consequent will be added as the next step of the proof. For example, if the proof is [[p], p, [q], p], inputting '>I, 2, 3' will modify and print the proof as [[p], p, [[q], p], (q > p)]. Note that the entire subproof is now a single element in the list, and hence the entire list now has four elements. 
+
+16. '=E1, n, m': This applies biconditional elimination to the formula at position 
