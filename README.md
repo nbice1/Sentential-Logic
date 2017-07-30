@@ -47,7 +47,7 @@ The following inference rules can be used, leading to a sound and complete natur
 
 10. 'vI1, n': This applies disjunction introduction to the formula located at position n in the proof-list resulting in that formula as left disjunct. The user will then be asked to input a formula corresponding to the right disjunct, and the complete disjunction will then be added as the next step of the proof. For example, if the proof is [[p]], inputting 'vI1, 0' will result in a query for a formula, and inputting 'q' will modify and print the proof as [[p], (p v q)]. 
 
-11. 'vI2, n': This applies disjunction introduction to the formula located at position n in the proof-list resulting in that formula as right disjunct. The user will then be asked to input a formula corresponding to the left disjunct, and the complete disjunction will then be added as the next step of the proof. For example, if the proof is [[p]], inputting 'vI1, 0' will result in a query for a formula, and inputting 'q' will modify and print the proof as [[p], (q v p)]. 
+11. 'vI2, n': This applies disjunction introduction to the formula located at position n in the proof-list resulting in that formula as right disjunct. The user will then be asked to input a formula corresponding to the left disjunct, and the complete disjunction will then be added as the next step of the proof. For example, if the proof is [[p]], inputting 'vI2, 0' will result in a query for a formula, and inputting 'q' will modify and print the proof as [[p], (q v p)]. 
 
 12. '\~E, n': This applies double negation elimination to the formula located at position n in the proof-list. For example, if the proof is [[\~\~p]], inputting '~E, 0' will modify and print the proof as [[\~\~p], p]. 
 
