@@ -289,6 +289,10 @@ def prover():
                          and str(pr1[0]) == str(pr2[0].right):
                         proof.append(pr2[0].left)
                         print('  proof =', proof)
+                    elif (not type(pr1) == list) and type(pr2) == Bicond \
+                         and str(pr1) == str(pr2.right):
+                        proof.append(pr2.left)
+                        print ('  proof =', proof)
                     else:
                         print('That is not an acceptable use of =E2.')
                 elif rule[0] == 'Assume':
