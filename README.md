@@ -27,9 +27,9 @@ A proof is represented as a list. All elements of the list are either formulas o
 
 The following inference rules can be used, leading to a sound and complete natural deduction system: 
 
-1. '^E1, n': This applies conjunction elimination to the first conjunct of the formula located at position n in the proof-list. For example, if the proof is [[(p ^ q)]], inputting '^E1, 0' will modify and print the proof as [[(p ^ q)], p]. 
+1. '^E1, n': This applies conjunction elimination to the left conjunct of the formula located at position n in the proof-list. For example, if the proof is [[(p ^ q)]], inputting '^E1, 0' will modify and print the proof as [[(p ^ q)], p]. 
 
-2. '^E2, n': This applies conjunction elimination to the first conjunct of the formula located at position n in the proof-list. For example, if the proof is [[(p ^ q)]], inputting '^E2, 0' will modify and print the proof as [[(p ^ q)], q]. 
+2. '^E2, n': This applies conjunction elimination to the right conjunct of the formula located at position n in the proof-list. For example, if the proof is [[(p ^ q)]], inputting '^E2, 0' will modify and print the proof as [[(p ^ q)], q]. 
 
 3. '^I, n, m': This applies conjunction introduction to the formulas located at postions n and m in the proof-list. For example, if the proof is [[p], [q]], inputting '^I, 0, 1' will modify and print the proof as [[p], [q], (p ^ q)]. 
 
