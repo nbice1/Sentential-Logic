@@ -17,7 +17,7 @@ evaluator()
 
 When running the evaluator() function, one should begin by assigning truth-values to atomic formulas by inputting expressions of the form '(p : T)' or '(q : F)'. All current assignments will be printed as a dictionary called 'env'. One can then construct a complex formula using the logical connectives and the function will print its truth-value in the environment (i.e. relative to the truth-value assignments to the relevant atomic formulas), followed by the printing the dictionary of assignments. For example, if 'p' is True and 'q' is False, '(p > (p ^ q))' will be evaluated as False. If an atomic formula in the complex formula being evaluated has not been assigned a truth-value, you will receive an error message. 
 
-One can also use the truth-values 'T' and 'F' to construct complex formulas: e.g. after entering '(T ^ (T v F))' the function will print True, followed by the current assignments. One can also assign atomic formulas the truth-values of complex formulas, provided the latter formulas can be evaluated as True or False. For example, if 'p' is True and 'q' is False, '(r: (p ^ q))' will assign the truth-value False to atomic formula 'r'. 
+One can also use the truth-values 'T' and 'F' to construct complex formulas: e.g. after entering '(T ^ (T v F))' the function will print True, followed by the current assignments. One can also assign atomic formulas the truth-values of complex formulas, provided the latter formulas can be evaluated as True or False. For example, if 'p' is True and 'q' is False, '(r : (p ^ q))' will assign the truth-value False to atomic formula 'r'. 
 
 prover()
 
