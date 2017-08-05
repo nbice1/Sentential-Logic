@@ -289,7 +289,7 @@ def prover():
                          and str(pr1[0]) == str(pr2[0].right):
                         proof.append(pr2[0].left)
                         print('  proof =', proof)
-                    elif (not type(pr1) == list) and type(pr2) == Bicond \
+                    elif (not type(pr1) == list) and type(pr2) == Bicond\
                          and str(pr1) == str(pr2.right):
                         proof.append(pr2.left)
                         print ('  proof =', proof)
@@ -331,8 +331,13 @@ def prover():
                     else:
                         print ('That is not a contradiction.')
                 elif rule[0] == '~I':
+                    nested = False
+                    for n in range(int(rule[1]) + 1, len(proof)):
+                        if type(proof[n]) == list and len(proof[n]) == 1:
+                            print('You must first close the current subproof.')
+                            nested = True
                     if type(pr1) == list and len(pr1) == 1 and type(pr2) == \
-                       TruthValue and pr2.value == False:
+                       TruthValue and pr2.value == False and nested == False:
                         subproof = []
                         for n in range(int(rule[1]), int(rule[2]) + 1):
                             subproof.append(proof[n])
@@ -350,7 +355,12 @@ def prover():
                         proof.append(pr1)
                         print ('  proof =', proof)
                 elif rule[0] == '>I':
-                    if type(pr1) == list and len(pr1) == 1:
+                    nested = False
+                    for n in range(int(rule[1]) + 1, len(proof)):
+                        if type(proof[n]) == list and len(proof[n]) == 1:
+                            print('You must first close the current subproof.')
+                            nested = True
+                    if type(pr1) == list and len(pr1) == 1 and nested == False:
                         subproof = []
                         for n in range(int(rule[1]), len(proof)):
                             subproof.append(proof[n])
