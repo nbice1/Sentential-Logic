@@ -102,9 +102,13 @@ seps = ['(', ')', '~', '^', 'v', '>', '=', ':', 'T', 'F']
 
 import string
 
+#this function converts a string into a list of its significant parts; e.g. '(p ^ (q v r))' is converted into ['(', 'p', '^', 
+#'(', 'q', 'v', 'r', ')', ')']
 def tokenize(inputString):
     result = []
     state = 'open'
+    #this function loops over the input string, adding a character to the list if it's in seps (see above), ignoring it if 
+    #it's a space, and starting another loop otherwise (since it will then be a variable name, see below)
     for n in range(len(inputString)):
         if inputString[n] in seps:
             result.append(inputString[n])
@@ -112,6 +116,9 @@ def tokenize(inputString):
         elif inputString[n] == ' ':
             state = 'open'
         else:
+            #the character at index n must be the beginning of a variable name, and hence a new loop is constructed in order
+            #to find the end of the variable name and then add the whole variable name to the list; this is done by noting 
+            #that the end of a variable name will either be a space, a special character (in seps), or the end of the string
             for m in range(n, len(inputString)):
                 if state == 'open' and (inputString[m] == ' ' or \
                 inputString[m] in seps):
@@ -122,9 +129,12 @@ def tokenize(inputString):
                     state = 'word'
     return result
 
+#this function returns true if its input is 'T' or 'F'
 def valueTok(token):
     return token == 'T' or token == 'F'
 
+#this function returns true if its input is a string of letters and numbers not including 'T', 'F', or 'v', all 
+#of which have special meanings in the formal language (True, False, and disjunction, respectively)
 def variableTok(token):
     for char in token:
         if not(char in string.ascii_letters or char in string.digits) \
@@ -132,7 +142,12 @@ def variableTok(token):
             return False
     return True
 
+#this function parses a list of significant expressions recursively and returns the appropriate syntax tree (an instance of 
+#one of the classes above); the expected input is the output of the tokenize function (above) given a string as input
 def parse(tokens):
+    #this helper function takes an index and returns a tuple consisting of both the syntax tree corresponding to that index 
+    #and the following index; if the string at the input index stands for a logical connective or truth-value assignment, this 
+    #function is called recursively on the branches corresponding to that connective or assignment
     def parseForm(index):
         token = tokens[index]
         if valueTok(token):
@@ -146,6 +161,8 @@ def parse(tokens):
             (tree, nextIndex) = parseForm(index + 1)
             return (Not(tree), nextIndex)
         else:
+            #here we take advantage of the fact that in this case the string at the input index will be a '(', and hence 
+            #the following index will correspond to the left branch of a binary connective or truth-value assignment
             (leftTree, opIndex) = parseForm(index + 1)
             op = tokens[opIndex]
             (rightTree, parIndex) = parseForm(opIndex + 1)
@@ -159,9 +176,12 @@ def parse(tokens):
                 return (Bicond(leftTree, rightTree), parIndex + 1)
             elif op == ':':
                 return (Assign(leftTree, rightTree), parIndex + 1)
+    #we then call the helper function on the index 0 to construct the full syntax tree, which is then returned
     (parsedForm, nextIndex) = parseForm(0)
     return parsedForm
 
+#this is one of the two main functions of the program, which takes a string as input and outputs the truth-value of the
+#corresponding logical formula or commits a truth-value assignment to the environment
 def evaluator():
     env = {}
     while True:
@@ -169,6 +189,8 @@ def evaluator():
         if e == 'exit':
             break
         else:
+            #here we use our parser to determine the appropriate syntax tree and then run its eval method and print the result
+            #in addition to the current environment of truth-value assignments
             print ('%', parse(tokenize(e)).eval(env))
             print ('   env =', env)
 
