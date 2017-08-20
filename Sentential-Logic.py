@@ -236,7 +236,7 @@ def prover():
             else:
                 #there are 18 separate inference rules that can be applied, each of which must be handled separately (see 
                 #README for details on the separate inference rules; I am only including comments on the first rule and a
-                #a couple others since the rest are all handled in a similar way); I assume the reader has a basic
+                #couple others since the rest are all handled in a similar way); I assume the reader has a basic
                 #understanding of natural deduction systems in sentential/propositional logic
                 rule = listMaker(e)
                 if len(rule) == 2 and not rule[0] == 'Assume':
