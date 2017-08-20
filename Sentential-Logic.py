@@ -181,8 +181,8 @@ def parse(tokens):
     (parsedForm, nextIndex) = parseForm(0)
     return parsedForm
 
-#this is one of the two main functions of the program, which takes a string as input and outputs the truth-value of the
-#corresponding logical formula or commits a truth-value assignment to the environment
+#this is one of the two main functions of the program, which requests a string from the user as input and either outputs the 
+#truth-value of the corresponding logical formula or commits a truth-value assignment to the environment
 def evaluator():
     env = {}
     while True:
