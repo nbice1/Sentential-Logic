@@ -1,59 +1,90 @@
+#these initial classes treat formulas as syntax trees, with each internal node corresponding to a logical connective with 
+#one or two branches (negation has one branch, binary connectives have left and right branches), and bottom nodes
+#corresponding to atomic sentence variables or truth-values
+
 class Not:
     opStr = '~'
     def __init__(self, formula):
         self.formula = formula
+        
+    #negations are represented in the form '~p'
     def __str__(self):
         return self.opStr + str(self.formula)
     def __repr__(self):
         return str(self)
+    
+    #a negation is true exactly if its main subformula is false, and the eval function treats it accordingly; here 'env' is
+    #a dictionary containing assignments of truth-values to atomic formulas
     def eval(self, env):
         if self.formula.eval(env) == None:
             return None
         else:
             return not self.formula.eval(env)
+        
+#this is the main class for binary connectives, which have both left and right branches (corresponding to their left and right
+#subformulas)
 class BinaryOp:
     def __init__(self, left, right):
         self.left = left
         self.right = right
+        
+    #all binary connectives * are represented in the form '(p * q)'
     def __str__(self):
         return '(' + str(self.left) + ' ' + self.opStr + ' ' + \
                str(self.right) + ')'
     def __repr__(self):
         return str(self)
+    
 class And(BinaryOp): 
     opStr = '^'
+    #a conjunction is true exactly if both conjuncts are true
     def eval(self, env):
         return self.left.eval(env) and self.right.eval(env)
+    
 class Or(BinaryOp): 
     opStr = 'v'
+    #a disjunction is true exactly if either the first disjunct is true or the second disjunct is true or both
     def eval(self, env):
         return self.left.eval(env) or self.right.eval(env)
+    
 class Implies(BinaryOp):
     opStr = '>'
+    #a material conditional is true exactly if the conjunction of the antecedent and the negation of the consequent is false
     def eval(self, env):
         return not(self.left.eval(env) and not(self.right.eval(env)))
+    
 class Bicond(BinaryOp):
     opStr = '='
+    #a biconditional is true exactly if either both sides are true or both sides are false
     def eval(self, env):
         return (self.left.eval(env) and self.right.eval(env)) or \
                (not(self.left.eval(env)) and not(self.right.eval(env)))
+        
+#this is a special class for assigning truth-values to atomic sentence variables
 class Assign(BinaryOp):
     opStr = ':'
+    #the eval function modifies the environment 'env' (a dictionary) by assigning the truth-value specified to the atomic
+    #formula, e.g. '(p : T)' when evaluated assigns the truth-value T to atomic formula 'p'
     def eval(self, env):
         value = self.right.eval(env)
         env[self.left.name] = value
+        
+#this class handles atomic sentence variables, which are strings of letters and numbers
 class Variable:
     def __init__(self, name):
         self.name = name
     def __str__(self):
         return str(self.name)
     __repr__ = __str__
+    #evaluating a variable will either return its truth-value or print an error message if it doesn't have one
     def eval(self, env):
         if self.name in env:
             return env[self.name]
         else:
             print ("Atomic formula %s has not been assigned a truth-value." \
                    % self.name)
+            
+#this is a class for the two truth-values: True and False
 class TruthValue:
     def __init__(self, value):
         self.value = value
@@ -66,6 +97,7 @@ class TruthValue:
     def eval(self, env):
         return self.value
     
+#this is a list of special characters used by the parser to parse an inputted string
 seps = ['(', ')', '~', '^', 'v', '>', '=', ':', 'T', 'F']
 
 import string
