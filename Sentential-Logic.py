@@ -195,10 +195,14 @@ def evaluator():
             print ('%', parse(tokenize(e)).eval(env))
             print ('   env =', env)
 
+#this function is similar to tokenize above, except it constructs a list of whole formula-expressions or special expressions
+#separated by ',' or ':'
 def listMaker(string):
     result = []
     state = 'open'
     for n in range(len(string)):
+        #the end of a token string will either be a ',' or a ':' or the end of the full input string, and we take advantage 
+        #of this to add the full token string to the constructed list
         for m in range(n, len(string)):
             if state == 'open' and (string[m] == ',' or string[m] == ':'):
                 result.append(string[n:m])
@@ -210,12 +214,17 @@ def listMaker(string):
             state = 'open'
     return result
 
+#this is the second main function of our program, which allows the user to construct a proof in a sound and complete 
+#derivation system for sentential logic
 def prover():
+    #the proof will be treated as a list of formulas and further lists (which correspond to assumptions and subproofs)
     proof = []
     e = input('Please state the premises: ')
     if e == 'exit':
         return None
     else:
+        #the premises are separated by commas, and hence listMaker can separate them before we feed them into our parser and
+        #construct the initial proof, which is then printed (see README for details)
         prems = listMaker(e)
         for pr in prems:
             proof.append([parse(tokenize(pr))])
@@ -225,6 +234,10 @@ def prover():
             if e == 'exit':
                 break
             else:
+                #there are 18 separate inference rules that can be applied, each of which must be handled separately (see 
+                #README for details on the separate inference rules; I am only including comments on the first rule and a
+                #a couple others since the rest are all handled in a similar way); I assume the reader has a basic
+                #understanding of natural deduction systems in sentential/propositional logic
                 rule = listMaker(e)
                 if len(rule) == 2 and not rule[0] == 'Assume':
                     pr1 = proof[int(rule[1])]
@@ -244,8 +257,13 @@ def prover():
                 else:
                     print ('That is not an acceptable inference rule.')
                 if rule[0] == '^E1':
+                    #as an example, if the inputted inference rule is conjunction elimination on the left conjunct, we first 
+                    #check that the formula the user specified is in fact a conjunction, and then add its left conjunct to 
+                    #the proof (which is then printed)
                     if type(pr1) == And:
                         proof.append(pr1.left)
+                    #here (and for each inference rule) we must check whether the formula the user specified is an assumption, 
+                    #since in that case it will be contained within a single-element list and must be treated accordingly
                     elif type(pr1) == list and len(pr1) == 1 and \
                          type(pr1[0]) == And:
                         proof.append(pr1[0].left)
@@ -351,6 +369,8 @@ def prover():
                     else:
                         print('That is not an acceptable use of =E2.')
                 elif rule[0] == 'Assume':
+                    #here we begin a subproof with an assumption specified by the user, now contained within a single-element
+                    #list (see README for details)
                     assumption = parse(tokenize(rule[1]))
                     proof.append([assumption])
                     print ('  proof =', proof)
@@ -374,6 +394,8 @@ def prover():
                     else:
                         print ('That is not a contradiction.')
                 elif rule[0] == 'FE':
+                    #here we ask the user to provide a formula, which will be added to the proof as a consequence of the 
+                    #contradiction specified by the user
                     if type(pr1) == TruthValue and pr1.value == False:
                         e = input('Please provide a formula: ')
                         proof.append(parse(tokenize(e)))
@@ -386,6 +408,9 @@ def prover():
                     else:
                         print ('That is not a contradiction.')
                 elif rule[0] == '~I':
+                    #here we must first make sure additional subproofs within the specified subproof have been closed, which 
+                    #is accomplished with a for loop checking for additional single-element lists (corresponding to the 
+                    #beginning of additional open subproofs); see README for details
                     nested = False
                     for n in range(int(rule[1]) + 1, len(proof)):
                         if type(proof[n]) == list and len(proof[n]) == 1:
@@ -410,6 +435,7 @@ def prover():
                         proof.append(pr1)
                         print ('  proof =', proof)
                 elif rule[0] == '>I':
+                    #just as with rule '~I' above, we must first check for additional subproofs with a for loop
                     nested = False
                     for n in range(int(rule[1]) + 1, len(proof)):
                         if type(proof[n]) == list and len(proof[n]) == 1:
