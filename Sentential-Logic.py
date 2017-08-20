@@ -194,8 +194,8 @@ def evaluator():
         if e == 'exit':
             break
         else:
-            #here we use our parser to determine the appropriate syntax tree and then run its eval method and print the result
-            #in addition to the current environment of truth-value assignments
+            #here we use our parser to determine the appropriate syntax tree and then run its eval method and print both the 
+            #result and the current environment of truth-value assignments
             try:
                 print ('%', parse(tokenize(e)).eval(env))
                 print ('   env =', env)
@@ -249,9 +249,11 @@ def prover():
             else:
                 #there are 18 separate inference rules that can be applied, each of which must be handled separately (see 
                 #README for details on the separate inference rules; I am only including comments on the first rule and a
-                #a couple others since the rest are all handled in a similar way); I assume the reader has a basic
+                #couple others since the rest are all handled in a similar way); I assume the reader has a basic
                 #understanding of natural deduction systems in sentential/propositional logic
                 rule = listMaker(e)
+                #these first few conditions simply assign values to variables pr1, etc. to make the rest of the code cleaner 
+                #and check for a couple simple user mistakes
                 if len(rule) == 2 and not rule[0] == 'Assume':
                     pr1 = proof[int(rule[1])]
                 elif len(rule) == 3 and not rule[0] == 'Assume':                   
