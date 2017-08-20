@@ -261,7 +261,7 @@ def prover():
                     print ('You can only assume a single formula.')
                 elif rule[0] == 'Assume' and len(rule) == 2:
                     pass
-                elif rule[0] == 'TI':
+                elif rule[0] == 'TI' or rule[0] == 'delete':
                     pass
                 elif rule[0] == 'vE' and len(rule) == 4:
                     pr1 = proof[int(rule[1])]
@@ -541,6 +541,10 @@ def prover():
                                'Use rule R to discharge assumptions.')
                     else:
                         print ('That is not an acceptable use of vE.')
+                elif rule[0] == 'delete':
+                    #removes the last line of the proof
+                    proof = proof[:len(proof) - 1]
+                    print ('  proof =', proof)
                 else:
                     print ('That is not an acceptable inference rule.') 
                 
