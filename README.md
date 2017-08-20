@@ -25,6 +25,8 @@ The prover() function begins by asking for the premises of the proof. Premises m
 
 A proof is represented as a list. All elements of the list are either formulas or further lists. All assumptions (including the initial premises) are contained within single-element lists. For example, if the user inputs '(p ^ (q v r)), r' as the initial premises, the initial proof will be stored and printed as the list [[(p ^ (q v r))], [r]]. If the user then applies conjunction elimination to the first conjunct of the first premise (as explained below), the proof will be printed as [[(p ^ (q v r))], [r], p]. Each application of an inference rule adds a new element to the list corresponding to the derived formula. 
 
+Input 'exit' at any time to exit the program. Input 'delete' in order to delete the last line of the proof (allowing you to go back a step). 
+
 The following inference rules can be used, leading to a sound and complete natural deduction system: 
 
 1. '^E1, n': This applies conjunction elimination to the left conjunct of the formula located at position n in the proof-list. For example, if the proof is [[(p ^ q)]], inputting '^E1, 0' will modify and print the proof as [[(p ^ q)], p]. 
