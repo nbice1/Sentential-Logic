@@ -178,8 +178,12 @@ def parse(tokens):
             elif op == ':':
                 return (Assign(leftTree, rightTree), parIndex + 1)
     #we then call the helper function on the index 0 to construct the full syntax tree, which is then returned
-    (parsedForm, nextIndex) = parseForm(0)
-    return parsedForm
+    try:
+        (parsedForm, nextIndex) = parseForm(0)
+        return parsedForm
+    #this checks for common user input mistakes and prints an error message
+    except IndexError:
+        print ("That is not a well-formed formula.")
 
 #this is one of the two main functions of the program, which requests a string from the user as input and either outputs the 
 #truth-value of the corresponding logical formula or commits a truth-value assignment to the environment
@@ -192,8 +196,12 @@ def evaluator():
         else:
             #here we use our parser to determine the appropriate syntax tree and then run its eval method and print the result
             #in addition to the current environment of truth-value assignments
-            print ('%', parse(tokenize(e)).eval(env))
-            print ('   env =', env)
+            try:
+                print ('%', parse(tokenize(e)).eval(env))
+                print ('   env =', env)
+            #if the user inputted an improper string, they will get an error message and the program will continue to run
+            except AttributeError:
+                print ('   env =', env)
 
 #this function is similar to tokenize above, except it constructs a list of whole formula-expressions or special expressions
 #separated by ',' or ':'
@@ -227,7 +235,12 @@ def prover():
         #construct the initial proof, which is then printed (see README for details)
         prems = listMaker(e)
         for pr in prems:
-            proof.append([parse(tokenize(pr))])
+            #this if condition catches user input errors and reruns prover (parse will print an error message)
+            if parse(tokenize(pr)) == None:
+                prover()
+                return None
+            else:
+                proof.append([parse(tokenize(pr))])
         print ('  proof =', proof)
         while True:
             e = input('Please apply an inference rule: ')
@@ -236,7 +249,7 @@ def prover():
             else:
                 #there are 18 separate inference rules that can be applied, each of which must be handled separately (see 
                 #README for details on the separate inference rules; I am only including comments on the first rule and a
-                #couple others since the rest are all handled in a similar way); I assume the reader has a basic
+                #a couple others since the rest are all handled in a similar way); I assume the reader has a basic
                 #understanding of natural deduction systems in sentential/propositional logic
                 rule = listMaker(e)
                 if len(rule) == 2 and not rule[0] == 'Assume':
@@ -371,9 +384,13 @@ def prover():
                 elif rule[0] == 'Assume':
                     #here we begin a subproof with an assumption specified by the user, now contained within a single-element
                     #list (see README for details)
-                    assumption = parse(tokenize(rule[1]))
-                    proof.append([assumption])
-                    print ('  proof =', proof)
+                    #this if condition catches user input errors (parse will print an error message)
+                    if parse(tokenize(rule[1])) == None:
+                        print ('  proof =', proof)
+                    else:
+                        assumption = parse(tokenize(rule[1]))
+                        proof.append([assumption])
+                        print ('  proof =', proof)
                 elif rule[0] == 'FI':
                     if type(pr2) == Not and str(pr2.formula) == str(pr1):
                         proof.append(TruthValue(False))
@@ -398,13 +415,19 @@ def prover():
                     #contradiction specified by the user
                     if type(pr1) == TruthValue and pr1.value == False:
                         e = input('Please provide a formula: ')
-                        proof.append(parse(tokenize(e)))
-                        print ('  proof =', proof)
+                        if parse(tokenize(e)) == None:
+                            print ('  proof =', proof)
+                        else:
+                            proof.append(parse(tokenize(e)))
+                            print ('  proof =', proof)
                     elif type(pr1) == list and len(pr1) == 1 and \
                          type(pr1[0]) == TruthValue and pr1[0].value == False:
                         e = input('Please provide a formula: ')
-                        proof.append(parse(tokenize(e)))
-                        print ('  proof =', proof)
+                        if parse(tokenize(e)) == None:
+                            print ('  proof =', proof)
+                        else: 
+                            proof.append(parse(tokenize(e)))
+                            print ('  proof =', proof)
                     else:
                         print ('That is not a contradiction.')
                 elif rule[0] == '~I':
@@ -480,20 +503,26 @@ def prover():
                         print ('That is not an acceptable use of =I.')
                 elif rule[0] == 'vI1':
                     e = input('Please provide a formula: ')
-                    if type(pr1) == list and len(pr1) == 1:
-                        proof.append(Or(pr1[0], parse(tokenize(e))))
+                    if parse(tokenize(e)) == None:
                         print ('  proof =', proof)
                     else:
-                        proof.append(Or(pr1, parse(tokenize(e))))
-                        print ('  proof =', proof)
+                        if type(pr1) == list and len(pr1) == 1:
+                            proof.append(Or(pr1[0], parse(tokenize(e))))
+                            print ('  proof =', proof)
+                        else:
+                            proof.append(Or(pr1, parse(tokenize(e))))
+                            print ('  proof =', proof)
                 elif rule[0] == 'vI2':
                     e = input('Please provide a formula: ')
-                    if type(pr1) == list and len(pr1) == 1:
-                        proof.append(Or(parse(tokenize(e)), pr1[0]))
+                    if parse(tokenize(e)) == None:
                         print ('  proof =', proof)
-                    else:
-                        proof.append(Or(parse(tokenize(e)), pr1))
-                        print ('  proof =', proof)
+                    else: 
+                        if type(pr1) == list and len(pr1) == 1:
+                            proof.append(Or(parse(tokenize(e)), pr1[0]))
+                            print ('  proof =', proof)
+                        else:
+                            proof.append(Or(parse(tokenize(e)), pr1))
+                            print ('  proof =', proof)
                 elif rule[0] == 'vE':
                     if type(pr1) == Or and type(pr2) == Implies and type(pr3) \
                        == Implies and str(pr1.left) == str(pr2.left) and \
