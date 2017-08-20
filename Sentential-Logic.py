@@ -182,7 +182,7 @@ def parse(tokens):
         (parsedForm, nextIndex) = parseForm(0)
         return parsedForm
     #this checks for common user input mistakes and prints an error message
-    except IndexError:
+    except (IndexError, TypeError):
         print ("That is not a well-formed formula.")
 
 #this is one of the two main functions of the program, which requests a string from the user as input and either outputs the 
