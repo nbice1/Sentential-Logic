@@ -145,9 +145,10 @@ def variableTok(token):
 #this function parses a list of significant expressions recursively and returns the appropriate syntax tree (an instance of 
 #one of the classes above); the expected input is the output of the tokenize function (above) given a string as input
 def parse(tokens):
-    #this helper function takes an index and returns a tuple consisting of both the syntax tree corresponding to that index 
-    #and the following index; if the string at the input index stands for a logical connective or truth-value assignment, this 
-    #function is called recursively on the branches corresponding to that connective or assignment
+    #this helper function takes an index and returns a tuple consisting of both the syntax tree beginning at that index 
+    #and the index after the tree; if the string at the input index is a '(', then it corresponds to the beginning of a syntax 
+    #tree for a binary connective or truth-value assignment, and hence the function is called recursively on the branches 
+    #corresponding to that connective or assignment (it will also be called recursively if the string is a '~')
     def parseForm(index):
         token = tokens[index]
         if valueTok(token):
@@ -162,7 +163,7 @@ def parse(tokens):
             return (Not(tree), nextIndex)
         else:
             #here we take advantage of the fact that in this case the string at the input index will be a '(', and hence 
-            #the following index will correspond to the left branch of a binary connective or truth-value assignment
+            #the next index will correspond to the left branch of a binary connective or truth-value assignment
             (leftTree, opIndex) = parseForm(index + 1)
             op = tokens[opIndex]
             (rightTree, parIndex) = parseForm(opIndex + 1)
